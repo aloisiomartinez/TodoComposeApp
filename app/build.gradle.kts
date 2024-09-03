@@ -78,8 +78,11 @@ dependencies {
     annotationProcessor(libs.androidx.room.compiler)
     // To use Kotlin Symbol Processing (KSP)
     ksp(libs.androidx.room.compiler)
-
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler.v2511)
+
+    //Coroutines
+    implementation(libs.kotlinx.coroutines.android)
+
 
 }
