@@ -75,6 +75,11 @@ dependencies {
 
     //Room
     implementation(libs.androidx.room.runtime)
+    // 3. Room KTX
+    implementation(libs.androidx.room.ktx)
+    // 4. Room Compiler
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
     // To use Kotlin Symbol Processing (KSP)
     ksp(libs.androidx.room.compiler)
