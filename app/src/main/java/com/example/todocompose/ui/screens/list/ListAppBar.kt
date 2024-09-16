@@ -49,17 +49,43 @@ import com.example.todocompose.components.PriorityItem
 import com.example.todocompose.data.models.Priority
 import com.example.todocompose.ui.theme.LARGE_PADDING
 import com.example.todocompose.ui.theme.TOP_APP_BAR_HEIGHT
+import com.example.todocompose.ui.viewModels.SharedViewModel
+import com.example.todocompose.util.SearchAppBarState
+import com.example.todocompose.util.TrailingIconState
 import kotlin.math.exp
 import kotlin.math.sin
 
 @Composable
-fun ListAppBar() {
-//    DefaultListAppBar(
-//        onSearchClicked = {},
-//        onSortClicked = {},
-//        onDeleteClicked = {}
-//    )
-    SearchAppBar(text = "Search", onTextChange = {}, onCloseClicked = {}, onSearchClicked = {})
+fun ListAppBar(
+    sharedViewModel: SharedViewModel,
+    searchAppBarState: SearchAppBarState,
+    searchTextState: String
+) {
+    when (searchAppBarState) {
+        SearchAppBarState.CLOSED -> {
+                DefaultListAppBar(
+                    onSearchClicked = {
+                        sharedViewModel.searchAppBarState.value = SearchAppBarState.OPENED
+                    },
+                    onSortClicked = {},
+                    onDeleteClicked = {}
+                )
+        }
+        else -> {
+            SearchAppBar(
+                text = searchTextState,
+                onTextChange = { newText ->
+                    sharedViewModel.searchTextState.value = newText
+                               },
+                onCloseClicked = {
+                    sharedViewModel.searchAppBarState.value = SearchAppBarState.CLOSED
+                    sharedViewModel.searchTextState.value = ""
+                },
+                onSearchClicked = {}
+            )
+
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -209,6 +235,10 @@ fun SearchAppBar(
     onCloseClicked: () -> Unit,
     onSearchClicked: (String) -> Unit
 ) {
+    var trailingIconState by remember {
+        mutableStateOf(TrailingIconState.READY_TO_DELETE)
+    }
+
     val context = LocalContext.current
     val window = (context as androidx.activity.ComponentActivity).window
     window.statusBarColor = MaterialTheme.colorScheme.primary.toArgb()
@@ -244,9 +274,25 @@ fun SearchAppBar(
                 }
             },
             trailingIcon = {
-                IconButton(onClick = {
-                    onCloseClicked()
-                }) {
+                IconButton(
+                    onClick = {
+                        when(trailingIconState) {
+                            TrailingIconState.READY_TO_DELETE -> {
+                                onTextChange("")
+                                trailingIconState = TrailingIconState.READY_TO_CLOSE
+                            }
+                            TrailingIconState.READY_TO_CLOSE -> {
+                                if(text.isNotEmpty()) {
+                                    onTextChange("")
+                                } else {
+                                    onCloseClicked()
+                                    trailingIconState = TrailingIconState.READY_TO_DELETE
+                                }
+                            }
+
+                        }
+                    }
+                ) {
                     Icon(
                         imageVector = Icons.Filled.Close,
                         contentDescription = "Close Icon",
