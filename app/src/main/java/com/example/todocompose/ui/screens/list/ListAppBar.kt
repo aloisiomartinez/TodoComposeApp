@@ -97,7 +97,7 @@ fun DefaultListAppBar(
 ) {
     TopAppBar(
         title = {
-            Text(text = "Tasks")
+            Text(text = stringResource(id = R.string.list_screen_title))
         },
         actions = {
             ListAppBarActions(
@@ -258,7 +258,7 @@ fun SearchAppBar(
                 onTextChange(it)
             },
             placeholder = {
-                Text(text = "Search")
+                Text(text = stringResource(id = R.string.search_placeholder))
             },
             textStyle = TextStyle(
                 color = MaterialTheme.colorScheme.onSurface
@@ -268,7 +268,7 @@ fun SearchAppBar(
                 IconButton(onClick = { /*TODO*/ }) {
                     Icon(
                         imageVector = Icons.Filled.Search,
-                        contentDescription = "Search Icon",
+                        contentDescription = stringResource(id = R.string.search_icon),
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
@@ -295,7 +295,7 @@ fun SearchAppBar(
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Close,
-                        contentDescription = "Close Icon",
+                        contentDescription = stringResource(id = R.string.search_icon),
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
