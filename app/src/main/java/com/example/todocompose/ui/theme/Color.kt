@@ -75,7 +75,7 @@ val md_theme_dark_tertiary = Color(0xFFB8CEA1)
 val md_theme_dark_onTertiary = Color(0xFF243515)
 val md_theme_dark_tertiaryContainer = Color(0xFF3A4C2A)
 //taskitemtextcolor
-val md_theme_dark_onTertiaryContainer = Color(0xFF141414)
+val md_theme_dark_onTertiaryContainer = Color(0xFFFFFFFF)
 val md_theme_dark_error = Color(0xFFFFB4AB)
 val md_theme_dark_errorContainer = Color(0xFF93000A)
 val md_theme_dark_onError = Color(0xFF690005)
