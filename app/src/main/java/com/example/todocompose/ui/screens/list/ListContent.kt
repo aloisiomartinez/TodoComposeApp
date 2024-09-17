@@ -42,19 +42,36 @@ fun ListContent(
     navigateToTaskScreen: (taskId: Int) -> Unit,
     innerPadding: PaddingValues
 ) {
-    LazyColumn (
+    if (tasks.isEmpty()) {
+        EmptyContent()
+    } else {
+        DisplayTasks(
+            tasks = tasks,
+            navigateToTaskScreen = navigateToTaskScreen,
+            innerPadding = innerPadding
+        )
+    }
+}
+
+@Composable
+fun DisplayTasks(
+    tasks: List<ToDoTask>,
+    navigateToTaskScreen: (taskId: Int) -> Unit,
+    innerPadding: PaddingValues
+) {
+    LazyColumn(
         modifier = Modifier.padding(innerPadding)
     ) {
-       items(
-           items = tasks,
-           key = { task -> task.id }
-       ) { task ->
-           Log.d("ListScreen Taskss", task.title)
-           TaskItem(
-               toDoTask = task,
-               navigateToTaskScreen = navigateToTaskScreen
-           )
-       }
+        items(
+            items = tasks,
+            key = { task -> task.id }
+        ) { task ->
+            Log.d("ListScreen Taskss", task.title)
+            TaskItem(
+                toDoTask = task,
+                navigateToTaskScreen = navigateToTaskScreen
+            )
+        }
     }
 }
 
@@ -94,10 +111,7 @@ fun TaskItem(
                 ) {
                     Canvas(
                         modifier = Modifier
-                            .width(PRIORITY_INDICATOR_SIZE)
-                            .size(
-                                PRIORITY_INDICATOR_SIZE
-                            )
+                            .size(PRIORITY_INDICATOR_SIZE)
                     ) {
                         drawCircle(
                             color = toDoTask.priority.color

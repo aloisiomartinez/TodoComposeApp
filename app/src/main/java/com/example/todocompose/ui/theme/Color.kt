@@ -15,6 +15,9 @@ val MediumPriorityColor = Color(0xFFFFC114)
 val HighPriorityColor = Color(0xFFFF4646)
 val NonePriorityColor = Color(0xFFFFFFFF)
 
+val LightGray = Color(0xFFFCFCFC)
+val MediumGray = Color(0xFF9C9C9C)
+val DarkGray = Color(0xFF141414)
 
 //LIGHT COLORS
 val md_theme_light_primary = Color(0xFF6200EE)
