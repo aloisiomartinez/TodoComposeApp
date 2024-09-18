@@ -49,7 +49,7 @@ val md_theme_light_onBackground = Color(0xFF03DAC5)
 val md_theme_light_surface = Color(0xFFFFFBFF)
 
 //Action Bar Colors Icons
-val md_theme_light_onSurface = Color(0xFF000000)
+val md_theme_light_onSurface = Color(0xFFFFFFFF)
 
 val md_theme_light_surfaceVariant = Color(0xFFF0E0CF)
 val md_theme_light_onSurfaceVariant = Color(0xFF4F4539)
