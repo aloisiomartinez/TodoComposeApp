@@ -35,22 +35,25 @@ import com.example.todocompose.data.models.ToDoTask
 import com.example.todocompose.ui.theme.LARGE_PADDING
 import com.example.todocompose.ui.theme.PRIORITY_INDICATOR_SIZE
 import com.example.todocompose.ui.theme.TASK_ITEM_ELEVATION
+import com.example.todocompose.util.RequestState
 
 @Composable
 fun ListContent(
-    tasks: List<ToDoTask>,
+    tasks: RequestState<List<ToDoTask>>,
     navigateToTaskScreen: (taskId: Int) -> Unit,
     innerPadding: PaddingValues
 ) {
-    if (tasks.isEmpty()) {
-        EmptyContent()
-    } else {
-        DisplayTasks(
-            tasks = tasks,
-            navigateToTaskScreen = navigateToTaskScreen,
-            innerPadding = innerPadding
-        )
-    }
+   if (tasks is RequestState.Success) {
+       if (tasks.data.isEmpty()) {
+           EmptyContent()
+       } else {
+           DisplayTasks(
+               tasks = tasks.data,
+               navigateToTaskScreen = navigateToTaskScreen,
+               innerPadding = innerPadding
+           )
+       }
+   }
 }
 
 @Composable
