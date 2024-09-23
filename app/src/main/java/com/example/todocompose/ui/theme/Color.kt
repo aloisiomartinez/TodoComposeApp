@@ -35,7 +35,11 @@ val md_theme_light_tertiary = Color(0xFF51643F)
 val md_theme_light_onTertiary = Color(0xFFFFFFFF)
 //COLOR ITEM TEXT COLOR
 val md_theme_light_tertiaryContainer = Color(0xFFFCFCFC)
+//OutlinedCOlors Border
 val md_theme_light_onTertiaryContainer = Color(0xFF102004)
+//OutlinedCOlors Background
+
+
 val md_theme_light_error = Color(0xFFBA1A1A)
 val md_theme_light_errorContainer = Color(0xFFFFDAD6)
 val md_theme_light_onError = Color(0xFFFFFFFF)
