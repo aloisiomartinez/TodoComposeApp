@@ -21,23 +21,30 @@ fun TaskScreen(
     val priority: Priority by sharedViewModel.priority
 
 
-    Scaffold(topBar = {
-        TaskAppBar(selectedTask = selectedTask, navigateToListScreen = navigateToListScreen)
-    }, content = { innerPadding ->
-        TaskContent(
-            title = title,
-            onTitleChange = {
-                sharedViewModel.title.value = it
-            },
-            description = description,
-            onDescriptionChange = {
-                sharedViewModel.description.value = it
-            } ,
-            priority = priority,
-            onPrioritySelected = {
-                sharedViewModel.priority.value = it
-            },
-            innerPadding
-        )
-    })
+    Scaffold(
+        topBar = {
+            TaskAppBar(
+                selectedTask = selectedTask,
+                navigateToListScreen = navigateToListScreen
+            )
+        },
+        content =
+        { innerPadding ->
+            TaskContent(
+                title = title,
+                onTitleChange = {
+                    sharedViewModel.updateTitle(it)
+                },
+                description = description,
+                onDescriptionChange = {
+                    sharedViewModel.description.value = it
+                } ,
+                priority = priority,
+                onPrioritySelected = {
+                    sharedViewModel.priority.value = it
+                },
+                innerPadding
+            )
+        }
+    )
 }
