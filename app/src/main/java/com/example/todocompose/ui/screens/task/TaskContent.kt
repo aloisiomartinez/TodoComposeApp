@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.todocompose.R
+import com.example.todocompose.components.OutlinedTextFieldComponent
 import com.example.todocompose.components.PriorityDropDown
 import com.example.todocompose.data.models.Priority
 import com.example.todocompose.ui.theme.LARGE_PADDING
@@ -43,43 +44,56 @@ fun TaskContent(
                 .background(MaterialTheme.colorScheme.background)
                 .padding(all = LARGE_PADDING)
         ) {
-            OutlinedTextField(
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor  = MaterialTheme.colorScheme.onTertiaryContainer,
-                    focusedContainerColor = MaterialTheme.colorScheme.inversePrimary,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                    unfocusedLabelColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                    focusedLabelColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                    focusedTextColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                    focusedBorderColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                ),
+            OutlinedTextFieldComponent(
                 modifier = Modifier.fillMaxWidth(),
                 value = title,
-                onValueChange = { onTitleChange(it) },
-                label = { Text(text = stringResource(id = R.string.title))},
+                onValueChange = onTitleChange,
+                label = stringResource(id = R.string.title),
                 singleLine = true
             )
+//            OutlinedTextField(
+//                colors = OutlinedTextFieldDefaults.colors(
+//                    unfocusedBorderColor  = MaterialTheme.colorScheme.onTertiaryContainer,
+//                    focusedContainerColor = MaterialTheme.colorScheme.inversePrimary,
+//                    unfocusedTextColor = MaterialTheme.colorScheme.onTertiaryContainer,
+//                    unfocusedLabelColor = MaterialTheme.colorScheme.onTertiaryContainer,
+//                    focusedLabelColor = MaterialTheme.colorScheme.onTertiaryContainer,
+//                    focusedTextColor = MaterialTheme.colorScheme.onTertiaryContainer,
+//                    focusedBorderColor = MaterialTheme.colorScheme.onTertiaryContainer,
+//                ),
+//                modifier = Modifier.fillMaxWidth(),
+//                value = title,
+//                onValueChange = { onTitleChange(it) },
+//                label = { Text(text = stringResource(id = R.string.title))},
+//                singleLine = true
+//            )
             HorizontalDivider(
                 modifier = Modifier.height(MEDIUM_PADDING),
                 color = MaterialTheme.colorScheme.background
             )
             PriorityDropDown(priority = priority, onPrioritySelected=onPrioritySelected)
-
-            OutlinedTextField(
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor  = MaterialTheme.colorScheme.onTertiaryContainer,
-                    focusedContainerColor = MaterialTheme.colorScheme.inversePrimary,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                    unfocusedLabelColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                    focusedLabelColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                    focusedTextColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                    focusedBorderColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                ),
+            OutlinedTextFieldComponent(
                 modifier = Modifier.fillMaxSize(),
                 value = description,
-                onValueChange = {onDescriptionChange(it)},
-                label = { Text(text = stringResource(id = R.string.description))}
+                onValueChange = onDescriptionChange,
+                label = stringResource(id = R.string.description),
+                singleLine = false
             )
+//            OutlinedTextField(
+//                colors = OutlinedTextFieldDefaults.colors(
+//                    unfocusedBorderColor  = MaterialTheme.colorScheme.onTertiaryContainer,
+//                    focusedContainerColor = MaterialTheme.colorScheme.inversePrimary,
+//                    unfocusedTextColor = MaterialTheme.colorScheme.onTertiaryContainer,
+//                    unfocusedLabelColor = MaterialTheme.colorScheme.onTertiaryContainer,
+//                    focusedLabelColor = MaterialTheme.colorScheme.onTertiaryContainer,
+//                    focusedTextColor = MaterialTheme.colorScheme.onTertiaryContainer,
+//                    focusedBorderColor = MaterialTheme.colorScheme.onTertiaryContainer,
+//                ),
+//                modifier = Modifier.fillMaxSize(),
+//                value = description,
+//                onValueChange = {onDescriptionChange(it)},
+//                label = { Text(text = stringResource(id = R.string.description))}
+//            )
 
 
         }
