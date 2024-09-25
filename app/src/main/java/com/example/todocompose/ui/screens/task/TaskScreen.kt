@@ -39,7 +39,6 @@ fun TaskScreen(
                             displayToast(context=context)
                         }
                     }
-
                 }
             )
         },
