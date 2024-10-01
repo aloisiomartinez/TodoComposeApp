@@ -6,23 +6,30 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.todocompose.ui.viewModels.SharedViewModel
+import com.example.todocompose.util.Action
 import com.example.todocompose.util.SearchAppBarState
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -43,8 +50,19 @@ fun ListScreen(
 
     sharedViewModel.handleDatabaseActions(action = action)
 
-    Scaffold(
+    val snackBarHostState = remember { SnackbarHostState() }
 
+    DisplaySnackBar(
+        snackBarHostState = snackBarHostState,
+        handleDatabaseActions = { sharedViewModel.handleDatabaseActions(action) },
+        taskTitle = sharedViewModel.title.value,
+        action = action
+    )
+
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState)
+        },
         topBar = {
             ListAppBar(
                 sharedViewModel = sharedViewModel,
@@ -52,8 +70,7 @@ fun ListScreen(
                 searchTextState = searchTextState
             )
         },
-        content = {
-            innerPadding ->
+        content = { innerPadding ->
             ListContent(
                 tasks = allTasks,
                 navigateToTaskScreen = navigateToTaskScreen,
@@ -85,3 +102,25 @@ private fun ListFab(
     }
 }
 
+@Composable
+fun DisplaySnackBar(
+    snackBarHostState: SnackbarHostState,
+    handleDatabaseActions: () -> Unit,
+    taskTitle: String,
+    action: Action
+) {
+    handleDatabaseActions()
+
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(key1 = action) {
+        if (action != Action.NO_ACTION) {
+
+            val snackBarResult = snackBarHostState.showSnackbar(
+                message = "${action.name}: ${taskTitle}",
+                actionLabel = "Ok"
+            )
+
+        }
+    }
+}
