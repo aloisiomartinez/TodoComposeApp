@@ -1,24 +1,21 @@
 package com.example.todocompose.ui.screens.list
 
-import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
@@ -34,7 +31,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
@@ -43,17 +39,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.todocompose.R
 import com.example.todocompose.components.PriorityItem
 import com.example.todocompose.data.models.Priority
 import com.example.todocompose.ui.theme.LARGE_PADDING
 import com.example.todocompose.ui.theme.TOP_APP_BAR_HEIGHT
 import com.example.todocompose.ui.viewModels.SharedViewModel
+import com.example.todocompose.util.Action
 import com.example.todocompose.util.SearchAppBarState
 import com.example.todocompose.util.TrailingIconState
-import kotlin.math.exp
-import kotlin.math.sin
 
 @Composable
 fun ListAppBar(
@@ -63,20 +57,23 @@ fun ListAppBar(
 ) {
     when (searchAppBarState) {
         SearchAppBarState.CLOSED -> {
-                DefaultListAppBar(
-                    onSearchClicked = {
-                        sharedViewModel.searchAppBarState.value = SearchAppBarState.OPENED
-                    },
-                    onSortClicked = {},
-                    onDeleteClicked = {}
-                )
+            DefaultListAppBar(
+                onSearchClicked = {
+                    sharedViewModel.searchAppBarState.value = SearchAppBarState.OPENED
+                },
+                onSortClicked = {},
+                onDeleteAllClicked = {
+                    sharedViewModel.action.value = Action.DELETE_ALL
+                }
+            )
         }
+
         else -> {
             SearchAppBar(
                 text = searchTextState,
                 onTextChange = { newText ->
                     sharedViewModel.searchTextState.value = newText
-                               },
+                },
                 onCloseClicked = {
                     sharedViewModel.searchAppBarState.value = SearchAppBarState.CLOSED
                     sharedViewModel.searchTextState.value = ""
@@ -95,7 +92,7 @@ fun ListAppBar(
 fun DefaultListAppBar(
     onSearchClicked: () -> Unit,
     onSortClicked: (Priority) -> Unit,
-    onDeleteClicked: () -> Unit
+    onDeleteAllClicked: () -> Unit
 ) {
     TopAppBar(
         title = {
@@ -105,7 +102,7 @@ fun DefaultListAppBar(
             ListAppBarActions(
                 onSearchClicked = onSearchClicked,
                 onSortClicked = onSortClicked,
-                onDeleteClicked = onDeleteClicked
+                onDeleteAllClicked = onDeleteAllClicked
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(
@@ -118,11 +115,11 @@ fun DefaultListAppBar(
 fun ListAppBarActions(
     onSearchClicked: () -> Unit,
     onSortClicked: (Priority) -> Unit,
-    onDeleteClicked: () -> Unit
+    onDeleteAllClicked: () -> Unit
 ) {
     SearchAction(onSearchClicked = onSearchClicked)
     SortAction(onSortClicked = onSortClicked)
-    DeleteAllAction(onDeleteClicked = onDeleteClicked)
+    DeleteAllAction(onDeleteAllClicked = onDeleteAllClicked)
 }
 
 @Composable
@@ -158,6 +155,7 @@ fun SortAction(
             contentDescription = stringResource(id = R.string.sort_action)
         )
         DropdownMenu(
+            modifier = Modifier.background(color = MaterialTheme.colorScheme.onPrimary),
             expanded = expanded,
             onDismissRequest = { expanded = false })
         {
@@ -166,6 +164,16 @@ fun SortAction(
                 onClick = {
                     expanded = false
                     onSortClicked(Priority.LOW)
+                },
+                colors = MenuDefaults.itemColors(
+                    textColor = MaterialTheme.colorScheme.onSurface
+                )
+            )
+            DropdownMenuItem(
+                text = { PriorityItem(priority = Priority.MEDIUM) },
+                onClick = {
+                    expanded = false
+                    onSortClicked(Priority.HIGH)
                 },
                 colors = MenuDefaults.itemColors(
                     textColor = MaterialTheme.colorScheme.onSurface
@@ -186,10 +194,7 @@ fun SortAction(
                 onClick = {
                     expanded = false
                     onSortClicked(Priority.NONE)
-                },
-                colors = MenuDefaults.itemColors(
-                    textColor = MaterialTheme.colorScheme.onSurface
-                )
+                }
             )
         }
     }
@@ -197,7 +202,7 @@ fun SortAction(
 
 @Composable
 fun DeleteAllAction(
-    onDeleteClicked: () -> Unit
+    onDeleteAllClicked: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -212,6 +217,7 @@ fun DeleteAllAction(
             contentDescription = stringResource(id = R.string.delete_all_action)
         )
         DropdownMenu(
+            modifier = Modifier.background(color = MaterialTheme.colorScheme.onPrimary),
             expanded = expanded,
             onDismissRequest = { expanded = false })
         {
@@ -219,13 +225,16 @@ fun DeleteAllAction(
                 text = {
                     Text(
                         text = stringResource(id = R.string.delete_all_action),
-                        modifier = Modifier.padding(start = LARGE_PADDING)
+                        modifier = Modifier.padding(start = LARGE_PADDING),
+                        color = MaterialTheme.colorScheme.onTertiaryContainer
                     )
                 },
                 onClick = {
                     expanded = false
-                    onDeleteClicked()
-                })
+                    onDeleteAllClicked()
+                },
+
+            )
         }
     }
 }
@@ -278,13 +287,14 @@ fun SearchAppBar(
             trailingIcon = {
                 IconButton(
                     onClick = {
-                        when(trailingIconState) {
+                        when (trailingIconState) {
                             TrailingIconState.READY_TO_DELETE -> {
                                 onTextChange("")
                                 trailingIconState = TrailingIconState.READY_TO_CLOSE
                             }
+
                             TrailingIconState.READY_TO_CLOSE -> {
-                                if(text.isNotEmpty()) {
+                                if (text.isNotEmpty()) {
                                     onTextChange("")
                                 } else {
                                     onCloseClicked()
@@ -327,7 +337,7 @@ fun DefaultListAppBarPreview() {
     DefaultListAppBar(
         onSearchClicked = {},
         onSortClicked = {},
-        onDeleteClicked = {}
+        onDeleteAllClicked = {}
     )
 }
 
