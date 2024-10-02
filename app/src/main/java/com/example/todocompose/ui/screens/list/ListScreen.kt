@@ -135,7 +135,6 @@ fun DisplaySnackBar(
                    onUndoClicked = onUndoClicked
                )
            }
-
         }
     }
 }
