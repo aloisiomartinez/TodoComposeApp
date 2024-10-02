@@ -1,5 +1,6 @@
 package com.example.todocompose.navigation.destinations
 
+import android.util.Log
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.navigation.NavGraphBuilder
@@ -25,8 +26,7 @@ fun NavGraphBuilder.listComposable(
         })
     ) { navBackStackEntry ->
         val action = navBackStackEntry.arguments?.getString(LIST_ARGUMENT_KEY).toAction()
-
-
+        Log.i("Action LIstComposable $action", "Action ListComposable $action")
         LaunchedEffect(key1 = action) {
             sharedViewModel.action.value = action
         }

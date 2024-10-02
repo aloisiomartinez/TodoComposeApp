@@ -1,6 +1,7 @@
 package com.example.todocompose.ui.viewModels
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,7 +28,7 @@ class SharedViewModel  @Inject constructor(
 
     val action: MutableState<Action> = mutableStateOf(Action.NO_ACTION)
 
-    val id: MutableState<Int> = mutableStateOf(0)
+    val id: MutableState<Int> = mutableIntStateOf(0)
     val title: MutableState<String> = mutableStateOf("")
     val description: MutableState<String> = mutableStateOf("")
     val priority: MutableState<Priority> = mutableStateOf(Priority.LOW)
@@ -39,6 +40,24 @@ class SharedViewModel  @Inject constructor(
 
     private val _allTasks = MutableStateFlow<RequestState<List<ToDoTask>>>(RequestState.idle)
     val allTasks: StateFlow<RequestState<List<ToDoTask>>> = _allTasks
+
+    private val _searchTasks = MutableStateFlow<RequestState<List<ToDoTask>>>(RequestState.idle)
+    val searchTasks: StateFlow<RequestState<List<ToDoTask>>> = _searchTasks
+
+    fun searchDatabase(searchQuery: String) {
+        _searchTasks.value = RequestState.loading
+        try {
+            viewModelScope.launch {
+                repository.seachDatabase(searchQuery = "%$searchQuery%")
+                    .collect { searchedTasks ->
+                        _searchTasks.value = RequestState.Success(searchedTasks)
+                    }
+            }
+        } catch (e: Exception) {
+            _searchTasks.value = RequestState.Error(e)
+        }
+        searchAppBarState.value = SearchAppBarState.TRIGGERED
+    }
 
     fun getAllTasks() {
         _allTasks.value = RequestState.loading
@@ -73,6 +92,7 @@ class SharedViewModel  @Inject constructor(
             )
             repository.addTask(toDoTask = toDoTask)
         }
+        searchAppBarState.value = SearchAppBarState.CLOSED
     }
 
     private fun updateTask() {

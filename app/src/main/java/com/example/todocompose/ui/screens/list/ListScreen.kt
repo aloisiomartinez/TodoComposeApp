@@ -45,17 +45,18 @@ fun ListScreen(
     val action by sharedViewModel.action
 
     val allTasks by sharedViewModel.allTasks.collectAsState()
+    val searchedTasks by sharedViewModel.searchTasks.collectAsState()
 
     val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppBarState
     val searchTextState: String by sharedViewModel.searchTextState
 
     sharedViewModel.handleDatabaseActions(action = action)
-
+    Log.i("ActionListScreen $action", "action")
     val snackBarHostState = remember { SnackbarHostState() }
 
     DisplaySnackBar(
         snackBarHostState = snackBarHostState,
-        handleDatabaseActions = { sharedViewModel.handleDatabaseActions(action) },
+        handleDatabaseActions = { sharedViewModel.handleDatabaseActions(action = action) },
         onUndoClicked = {
             sharedViewModel.action.value = it
         },
@@ -76,9 +77,11 @@ fun ListScreen(
         },
         content = { innerPadding ->
             ListContent(
-                tasks = allTasks,
+                allTasks = allTasks,
+                searchedTasks = searchedTasks,
                 navigateToTaskScreen = navigateToTaskScreen,
-                innerPadding
+                innerPadding,
+                searchAppBarState = searchAppBarState
             )
         },
         floatingActionButton = {
@@ -106,6 +109,7 @@ private fun ListFab(
     }
 }
 
+@SuppressLint("LongLogTag")
 @Composable
 fun DisplaySnackBar(
     snackBarHostState: SnackbarHostState,
@@ -114,22 +118,23 @@ fun DisplaySnackBar(
     taskTitle: String,
     action: Action
 ) {
+
     handleDatabaseActions()
-
     val scope = rememberCoroutineScope()
-
     LaunchedEffect(key1 = action) {
+        Log.i("LaunchedEffect SnackBar $action", "LaunchedEffect SnackBar")
         if (action != Action.NO_ACTION) {
-
-            val snackBarResult = snackBarHostState.showSnackbar(
-                message = "${action.name}: ${taskTitle}",
-                actionLabel = setActionLabel(action = action)
-            )
-            undoDeletedTask(
-                action = action,
-                snackBarResult = snackBarResult,
-                onUndoClicked = onUndoClicked
-            )
+           scope.launch {
+               val snackBarResult = snackBarHostState.showSnackbar(
+                   message = "${action.name}: ${taskTitle}",
+                   actionLabel = setActionLabel(action = action)
+               )
+               undoDeletedTask(
+                   action = action,
+                   snackBarResult = snackBarResult,
+                   onUndoClicked = onUndoClicked
+               )
+           }
 
         }
     }

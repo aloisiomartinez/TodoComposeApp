@@ -36,24 +36,50 @@ import com.example.todocompose.ui.theme.LARGE_PADDING
 import com.example.todocompose.ui.theme.PRIORITY_INDICATOR_SIZE
 import com.example.todocompose.ui.theme.TASK_ITEM_ELEVATION
 import com.example.todocompose.util.RequestState
+import com.example.todocompose.util.SearchAppBarState
 
 @Composable
 fun ListContent(
-    tasks: RequestState<List<ToDoTask>>,
+    allTasks: RequestState<List<ToDoTask>>,
+    searchedTasks: RequestState<List<ToDoTask>>,
+    navigateToTaskScreen: (taskId: Int) -> Unit,
+    innerPadding: PaddingValues,
+    searchAppBarState: SearchAppBarState
+) {
+    if (searchAppBarState == SearchAppBarState.TRIGGERED) {
+        if (searchedTasks is RequestState.Success) {
+            HandleListContent(
+                tasks = searchedTasks.data,
+                navigateToTaskScreen = navigateToTaskScreen,
+                innerPadding = innerPadding
+            )
+        }
+    } else {
+        if (allTasks is RequestState.Success) {
+            HandleListContent(
+                tasks = allTasks.data,
+                navigateToTaskScreen = navigateToTaskScreen,
+                innerPadding = innerPadding
+            )
+        }
+    }
+}
+
+@Composable
+fun HandleListContent(
+    tasks: List<ToDoTask>,
     navigateToTaskScreen: (taskId: Int) -> Unit,
     innerPadding: PaddingValues
 ) {
-   if (tasks is RequestState.Success) {
-       if (tasks.data.isEmpty()) {
-           EmptyContent()
-       } else {
-           DisplayTasks(
-               tasks = tasks.data,
-               navigateToTaskScreen = navigateToTaskScreen,
-               innerPadding = innerPadding
-           )
-       }
-   }
+    if (tasks.isEmpty()) {
+        EmptyContent()
+    } else {
+        DisplayTasks(
+            tasks = tasks,
+            navigateToTaskScreen = navigateToTaskScreen,
+            innerPadding = innerPadding
+        )
+    }
 }
 
 @Composable
