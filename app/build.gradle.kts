@@ -89,6 +89,20 @@ dependencies {
     //Coroutines
     implementation(libs.kotlinx.coroutines.android)
 
+// Preferences DataStore (SharedPreferences like APIs)
 
+    implementation(libs.androidx.datastore.preferences)
+
+    // optional - RxJava2 support
+    implementation(libs.androidx.datastore.preferences.rxjava2)
+
+    // optional - RxJava3 support
+    implementation(libs.androidx.datastore.preferences.rxjava3)
+
+
+    // Alternatively - use the following artifact without an Android dependency.
+    dependencies {
+        implementation(libs.androidx.datastore.preferences.core)
+    }
 
 }
